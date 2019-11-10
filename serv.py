@@ -49,6 +49,8 @@ def get_user():
 	global arrived
 	global numLines
 	global reg
+	global arg1
+	global arg2
 	if(request.method == "POST"):
 		text = request.get_json()
 		print(next(iter(text)))
@@ -77,6 +79,8 @@ def get_user():
 				else:
 					if(i["instruction"].find("const") != -1):
 						s=s+"const "
+						arg2=arg1
+						arg1="const"
 					s=s+insMap["mapping"][i["instruction"].strip()]+" "
 			if(i["instruction"].find("load") != -1):
 				s=s+"sp ecx\n"+pcMap[i["func"]][int(i["inst"])]+" 2 "+i["param"]["addr"]
@@ -101,6 +105,30 @@ def get_user():
 						s=s+pcMap[nextIns["func"]][int(nextIns["inst"])]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 5 "+pcMap[nextIns["func"]][int(nextIns["inst"])]
 					else:
 						s=s+pcMap[nextIns["func"]][int(nextIns["inst"])]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4 "+pcMap[nextIns["func"]][int(nextIns["inst"])]
+			elif(i["instruction"].find("local") != -1 or i["instruction"].find("global") != -1):
+				if(i["instruction"].find("set") != -1):
+					if(int(i["param"]["index"])<16):
+						arg2=arg1
+						arg1 = "r"+i["param"]["index"]
+						s=s+arg1+" "+i["param"]["value"]
+					else:
+						memVal = (int(i["param"]["index"])-16)*4
+						arg2=arg1
+						arg1 = str(hex(memVal))
+						s=s+"temp(#"+i["param"]["value"]+") "+arg1
+				else:
+					if(int(i["param"]["index"])<16):
+						arg2=arg1
+						arg1 = "r"+i["param"]["index"]
+						s=s+arg1+" "+i["param"]["value"]
+					else:
+						memVal = (int(i["param"]["index"])-16)*4
+						arg2=arg1
+						arg1 = str(hex(memVal))
+						s=s+arg1+" #"+i["param"]["value"]
+			elif(i["instruction"].find("add") != -1 or i["instruction"].find("sub") != -1 or i["instruction"].find("mul") != -1 or i["instruction"].find("div") != -1 
+				or i["instruction"].find("and") != -1 or i["instruction"].find("or") != -1 or i["instruction"].find("xor") != -1):
+				s=s+arg2+" "+arg1
 			else:
 				for j in i["param"]:
 					s = s+i["param"][j]+" "

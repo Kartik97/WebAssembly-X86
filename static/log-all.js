@@ -257,25 +257,24 @@ Wasabi.analysis = {
     },
 
     unary(location, op, input, result) {
+        // if(text === "")
+        //     text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'","value":"'+result+'"}}';
+        // else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'","value":"'+result+'"}}';
         if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'","value":"'+result+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'","value":"'+result+'"}}';
-        //console.log(text);
-        //count++;
-        //if(count==batch)
-        //    sendData();
+            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'"}}';
+        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+input+'"}}';
         incCount();
         //console.log(location, op, "input =", input, "result =", result);
     },
 
     binary(location, op, first, second, result) {
+        // if(text === "")
+        //     text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'","value":"'+result+'"}}';
+        // else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'","value":"'+result+'"}}';
         if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'","value":"'+result+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'","value":"'+result+'"}}';
-        //console.log(text);
-        //count++;
-        //if(count==batch)
-        //    sendData();
+            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'"}}';
+        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"i1":"'+first+'","i2":"'+second+'"}}';
+
         incCount();
         //console.log(location, op, "first =", first, " second =", second, "result =", result);
     },

@@ -1,7 +1,6 @@
 import pickle
 import sys
 pcVal = {}
-#filepath = 'static/seidel.wasdump'
 filepath = (sys.argv[1])
 with open(filepath) as fp:
 	line = fp.readline()

@@ -1,6 +1,6 @@
 000301 begin function 
 000304 global.get 1 3904 
-000306 local.set 1 3904 
+000306 local.set 1 3904
 000308 local.get 0 8 
 00030a global.get 1 3904 
 00030c i32.add 8 3904 3912 
