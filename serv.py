@@ -4,9 +4,24 @@ import pickle
 import threading
 import gzip
 import sys
+import pandas as pd
+import math
+
+gpr={"eax":0,"ecx":0,"edx":0,"esi":0,"edi":0,"ebp":0,"esp":0}
+gprL = ["eax","ecx","edx","esi","edi","edi","ebp","esp"]
+#reg={"ax":0,"bx":0,"cx":0,"dx":0,"si":0,"di":0,"bp":0,"sp":0
+#	,"ah":0,"al":0,"bh":0,"bl":0,"ch":0,"cl":0,"dh":0,"dl":0}
+reg={}
+arg1 = ""
+arg2 = ""
+
 app = Flask(__name__, static_url_path='/static')
 pickleMap = open("pcVal.pickle","rb")
 pcMap = pickle.load(pickleMap)
+#insPickle = open("instMap.pickle","rb")
+#insMap = pickle.load(insPickle)
+insMap = pd.read_csv("mapping.csv",index_col="name")
+
 sem = threading.Semaphore()
 numLines = int(sys.argv[1])
 if(numLines == -1):
@@ -30,7 +45,7 @@ def get_user():
 	global req
 	global arrived
 	global numLines
-	print(req)
+	global reg
 	if(request.method == "POST"):
 		text = request.get_json()
 		print(next(iter(text)))
@@ -45,12 +60,47 @@ def get_user():
 		instList = arrived[str(req)]
 		#print(instList)
 		#arrived.pop(str(req), None)
-		for i in instList:
+		#print(instList)
+		for k in range(0,len(instList)):
+			i=instList[k]
 			#if(pcMap[i["func"]][int(i["inst"])]!=None):
 			if(i["func"] in pcMap and int(i["inst"]) in pcMap[i["func"]]):
-				s = pcMap[i["func"]][int(i["inst"])]+" "+i["instruction"]+" "
-			for j in i["param"]:
-				s = s+i["param"][j]+" "
+				s = pcMap[i["func"]][int(i["inst"])]+" 27 "
+			else:
+				continue
+			if(i["instruction"] in insMap.index):
+				if(insMap["mapping"][i["instruction"].strip()]=='NONE'):
+					continue
+				else:
+					if(i["instruction"].find("const") != -1):
+						s=s+"const "
+					s=s+insMap["mapping"][i["instruction"].strip()]+" "
+			if(i["instruction"].find("load") != -1):
+				s=s+"sp ecx\n"+pcMap[i["func"]][int(i["inst"])]+" 2 "+i["param"]["addr"]
+			elif (i["instruction"].find("store") != -1):
+				s=s+"edx sp"+"\n"+pcMap[i["func"]][int(i["inst"])]+" 3 "+i["param"]["addr"]
+			elif (i["instruction"].find("br") != -1):
+				s=s+"label:"+i["param"]["label"]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4 "+pcMap[i["param"]["targetFun"]][int(i["param"]["targetInst"])]
+			elif(i["instruction"].find("br_if") != -1):
+				if(i["param"]["cond"]=="true"):
+					s=s+"label:"+i["param"]["label"]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4 "+pcMap[i["param"]["targetFun"]][int(i["param"]["targetInst"])]					
+				else:
+					s=s+"label:"+i["param"]["label"]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 5 "+pcMap[i["param"]["targetFun"]][int(i["param"]["targetInst"])]
+			elif (i["instruction"].find("call") != -1):
+				if(i["param"]["target"] in pcMap):
+					s=s+"func:"+i["param"]["target"]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4 "+pcMap[i["param"]["target"]][-1]				
+				else:
+					s=s+"func:"+i["param"]["target"]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4"
+			elif(i["instruction"].find("if_") != -1):
+				if(k+1<len(instList)):
+					nextIns = instList[k+1]
+					if(i["param"]["cond"]=="true"):
+						s=s+pcMap[nextIns["func"]][int(nextIns["inst"])]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 5 "+pcMap[nextIns["func"]][int(nextIns["inst"])]
+					else:
+						s=s+pcMap[nextIns["func"]][int(nextIns["inst"])]+"\n"+pcMap[i["func"]][int(i["inst"])]+" 4 "+pcMap[nextIns["func"]][int(nextIns["inst"])]
+			else:
+				for j in i["param"]:
+					s = s+i["param"][j]+" "
 			s=s+"\n"
 			if(numLines > 0 or numLines == -10):
 				file.write(s.encode())

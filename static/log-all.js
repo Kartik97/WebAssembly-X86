@@ -38,6 +38,7 @@ function closeServer(){
 
 function sendLastData(){
     sendData();
+    //setTimeout(closeServer(), 5000);
     closeServer();
 }
 
@@ -120,7 +121,7 @@ Wasabi.analysis = {
         // count++;
         // if(count==batch)
         //     sendData();
-        incCount();
+        //incCount();
         //console.log(location, "if, condition =", condition);
     },
 
@@ -161,26 +162,26 @@ Wasabi.analysis = {
     },
 
     begin(location, type) {
-        if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {"type":"'+type+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {"type":"'+type+'"}}';
-        //console.log(text);
-        //count++;
-        //if(count==batch)
-        //    sendData();
+        // if(type!="if")
+        //     if(text === "")
+        //         text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {"type":"'+type+'"}}';
+        //     else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {"type":"'+type+'"}}';
+        if(type!="if")
+            if(text === "")
+                text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {}}';
+            else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"begin", "param": {}}';    
         incCount();
         //console.log(location, "begin", type);
     },
 
     // ifLocation === location of the matching if block for else
     end(location, type, beginLocation, ifLocation) {
+        // if(text === "")
+        //     text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {"type":"'+type+'","beginLoc":"'+beginLocation["func"]+'","beginInst":"'+beginLocation["instr"]+'"}}';
+        // else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {"type":"'+type+'","beginLoc":"'+beginLocation["func"]+'","beginInst":"'+beginLocation["instr"]+'"}}';
         if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {"type":"'+type+'","beginLoc":"'+beginLocation["func"]+'","beginInst":"'+beginLocation["instr"]+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {"type":"'+type+'","beginLoc":"'+beginLocation["func"]+'","beginInst":"'+beginLocation["instr"]+'"}}';
-        //console.log(text);
-        //count++;
-        //if(count==batch)
-        //    sendData();
+            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {}}';
+        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"end", "param": {}}';    
         incCount();
         //console.log(location, "end", type, "(begin @", beginLocation, ", if begin @", ifLocation, ")");
     },
@@ -283,10 +284,6 @@ Wasabi.analysis = {
         if(text === "")
             text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'", "param": {"addr":"'+memarg["addr"]+'","value":"'+value+'"}}';
         else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"'+op+'","param": {"addr":"'+memarg["addr"]+'","value":"'+value+'"}}';
-        //console.log(text);
-       // count++;
-       // if(count==batch)
-       //     sendData();
        incCount();
         //console.log(location, op, "value =", value, "from =", memarg);
     },
@@ -304,26 +301,26 @@ Wasabi.analysis = {
     },
 
     memory_size(location, currentSizePages) {
-        if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_size", "param": {"currPageSize":"'+currentSizePages+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_size", "param": {"currPageSize":"'+currentSizePages+'"}}';
+        // if(text === "")
+        //     text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_size", "param": {"currPageSize":"'+currentSizePages+'"}}';
+        // else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_size", "param": {"currPageSize":"'+currentSizePages+'"}}';
         //console.log(text);
         // count++;
         // if(count==batch)
         //     sendData();
-        incCount();
+        //incCount();
         //console.log(location, "memory_size, size (in pages) =", currentSizePages);
     },
 
     memory_grow(location, byPages, previousSizePages) {
-        if(text === "")
-            text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_grow", "param": {"by":"'+byPages+'","currPageSize":"'+previousSizePages+'"}}';
-        else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_grow", "param": {"by":"'+byPages+'","currPageSize":"'+previousSizePages+'"}}';
+        // if(text === "")
+        //     text += '{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_grow", "param": {"by":"'+byPages+'","currPageSize":"'+previousSizePages+'"}}';
+        // else text += ',{"func":"'+location["func"]+'","inst":"'+location["instr"]+'","instruction":"memory_grow", "param": {"by":"'+byPages+'","currPageSize":"'+previousSizePages+'"}}';
         //console.log(text);
         // count++;
         // if(count==batch)
         //     sendData();
-        incCount();
+        //incCount();
         //console.log(location, "memory_grow, delta (in pages) =", byPages, "previous size (in pages) =", previousSizePages);
     },
 
